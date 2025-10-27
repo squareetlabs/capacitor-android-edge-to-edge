@@ -1,0 +1,76 @@
+{
+  "name": "@squareetlabs/capacitor-android-edge-to-edge",
+  "version": "1.2.2",
+  "description": "Capacitor 6 and 7 plugin to support edge-to-edge display on Android using WindowCompat.enableEdgeToEdge() with independent status bar and navigation bar color control.",
+  "main": "dist/plugin.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "unpkg": "dist/plugin.js",
+  "files": [
+    "android/src/main/",
+    "android/build.gradle",
+    "dist/"
+  ],
+  "author": {
+    "name": "Squareetlabs"
+  },
+  "contributors": [
+    {
+      "name": "Alberto Rial Barreiro",
+      "email": "alberto@squareet.com",
+      "url": "https://squareet.com"
+    },
+    {
+      "name": "Jacobo Cantorna Cigarrán",
+      "email": "jacobo@squareet.com.com",
+      "url": "https://squareet.com"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/squareetlabs/capacitor-plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/squareetlabs/capacitor-plugins/issues"
+  },
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "native",
+    "android",
+    "edge-to-edge"
+  ],
+  "scripts": {
+    "verify": "npm run verify:android && npm run verify:web",
+    "verify:android": "cd android && ./gradlew clean build test && cd ..",
+    "verify:web": "npm run build",
+    "lint": "npm run prettier -- --check",
+    "fmt": "npm run prettier -- --write",
+    "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
+    "build": "npm run clean && tsc && rollup -c rollup.config.mjs",
+    "clean": "rimraf ./dist",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0 || ^7.0.0",
+    "@capacitor/cli": "^6.0.0 || ^7.0.0",
+    "@capacitor/core": "^6.0.0 || ^7.0.0",
+    "prettier": "^2.8.0",
+    "rimraf": "^3.0.0",
+    "rollup": "^2.79.0",
+    "typescript": "^4.9.0"
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=6.0.0 <8.0.0"
+  },
+  "capacitor": {
+    "android": {
+      "src": "android"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

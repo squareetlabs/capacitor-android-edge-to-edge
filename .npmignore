@@ -1,0 +1,49 @@
+# Development
+.vscode
+.idea
+*.iml
+*.log
+*.swp
+*.swo
+.DS_Store
+
+# Build
+dist/
+*.tsbuildinfo
+build/
+
+# Test
+coverage/
+.nyc_output/
+*.test.ts
+*.spec.ts
+
+# Android
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+android/keystore.properties
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/
+android/*.iml
+android/.idea/
+
+# Example
+example/
+docs/
+
+# Git
+.git/
+.gitignore
+
+# CI
+.github/
+
+# Misc
+node_modules/
+npm-debug.log
+yarn-error.log
+
