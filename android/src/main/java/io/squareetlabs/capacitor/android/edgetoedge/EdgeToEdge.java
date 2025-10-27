@@ -14,6 +14,8 @@ import com.getcapacitor.Logger;
 
 public class EdgeToEdge {
 
+    private static final String TAG = "EdgeToEdge";
+
     @NonNull
     private final EdgeToEdgeConfig config;
 
