@@ -1,15 +1,13 @@
 # @squareetlabs/capacitor-android-edge-to-edge
 
-Capacitor 6 and 7 plugin to support edge-to-edge display on Android and iOS with advanced features like setting the background color and style (Dark/Light) of the status bar and navigation bar independently.
+Capacitor 6 and 7 plugin to support [edge-to-edge](https://developer.android.com/develop/ui/views/layout/edge-to-edge) display on Android using `WindowCompat.enableEdgeToEdge()`.
 
 ## Features
 
 - ✅ **Edge-to-edge** display support on Android
-- ✅ **Status bar** color and style control (Android & iOS)
-- ✅ **Navigation bar** color and style control (Android only)
-- ✅ **Safe area insets** handling on iOS
-- ✅ **Independent colors** for status bar and navigation bar
-- ✅ **Style control** (Dark/Light) for system UI elements
+- ✅ **Safe area insets** handling
+- ✅ **Automatic layout** adjustment for system bars
+- ✅ **Keyboard aware** - adjusts layout when keyboard is visible
 
 ## Installation
 
@@ -48,85 +46,16 @@ This plugin is compatible with:
 - Uses `WindowCompat.enableEdgeToEdge()` for Android R+ (API 30+)
 - Falls back to system UI flags for older Android versions
 
-#### iOS
-
-- **Minimum SDK:** iOS 12.0+
-- Full support for iOS 13+ with modern status bar API
-- Automatic safe area insets handling
-
-## Configuration
-
-You can configure the plugin with the following options:
-
-| Prop                       | Type                | Description                                                                                |
-| -------------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`backgroundColor`**      | <code>string</code> | The hexadecimal color to set as the background color of the status bar and navigation bar. If statusBarColor or navigationBarColor are provided, this will be ignored. |
-| **`statusBarColor`**       | <code>string</code> | The hexadecimal color to set as the background color of the status bar only.              |
-| **`navigationBarColor`**   | <code>string</code> | The hexadecimal color to set as the background color of the navigation bar only.          |
-| **`statusBarStyle`**       | <code>Style</code> | The style for status bar icons (Dark or Light).                                             |
-| **`navigationBarStyle`**   | <code>Style</code> | The style for navigation bar buttons (Dark or Light).                                        |
-
-### Examples
-
-In `capacitor.config.json`:
-
-```json
-{
-  "plugins": {
-    "EdgeToEdge": {
-      "backgroundColor": "#ffffff",
-      "statusBarColor": "#ff0000",
-      "navigationBarColor": "#0000ff"
-    }
-  }
-}
-```
-
-In `capacitor.config.ts`:
-
-```ts
-/// <reference types="@squareetlabs/capacitor-android-edge-to-edge" />
-
-import { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
-  plugins: {
-    EdgeToEdge: {
-      backgroundColor: "#ffffff",
-      statusBarColor: "#ff0000",
-      navigationBarColor: "#0000ff"
-    },
-  },
-};
-
-export default config;
-```
-
 ## Usage
 
-The plugin **only needs to be installed**. It applies insets to the web view to support edge-to-edge display. The plugin provides methods to set the background color and style of the status bar and navigation bar (Android only) independently.
-
-### Platform Differences
-
-**Android:** Full control over status bar and navigation bar colors and styles
-**iOS:** Status bar control with automatic safe area handling (navigation bar concepts don't apply on iOS)
-
-### Basic Example
+The plugin **automatically applies edge-to-edge mode** when the plugin loads. It applies insets to the web view to support edge-to-edge display on Android.
 
 ```typescript
-import { EdgeToEdge, Style } from '@squareetlabs/capacitor-android-edge-to-edge';
-import { Platform } from '@capacitor/core';
+import { EdgeToEdge } from '@squareetlabs/capacitor-android-edge-to-edge';
 
-// Enable with style and color configuration
+// Enable edge-to-edge mode (called automatically on load)
 const enable = async () => {
-  // Android: Configure both status bar and navigation bar
-  // iOS: Configure status bar only
-  await EdgeToEdge.enable({
-    StatusBar: { style: Style.Dark, color: '#ffffff' },
-    ...(Platform.isNativeAndroid() && {
-      NavigationBar: { style: Style.Dark, color: '#ffffff' }
-    })
-  });
+  await EdgeToEdge.enable();
 };
 
 // Disable edge-to-edge mode
@@ -134,61 +63,11 @@ const disable = async () => {
   await EdgeToEdge.disable();
 };
 
-// Get current insets (safe area on iOS, system bars on Android)
+// Get current insets (safe area)
 const getInsets = async () => {
   const result = await EdgeToEdge.getInsets();
   console.log('Insets:', result);
-  // { top: 44, bottom: 34, left: 0, right: 0 } on iOS
-  // { top: 24, bottom: 48, left: 0, right: 0 } on Android
-};
-
-// Set both bars to the same color
-const setBackgroundColor = async () => {
-  await EdgeToEdge.setBackgroundColor({ color: '#ffffff' });
-};
-
-// Set background color and style for both bars
-const setBackgroundColorAndStyle = async () => {
-  await EdgeToEdge.setBackgroundColorAndStyle({ 
-    style: Style.Dark, 
-    color: '#ffffff' 
-  });
-};
-
-// Set different colors for each bar
-const setSeparateColors = async () => {
-  await EdgeToEdge.setBackgroundColor({
-    statusBarColor: '#ff0000',
-    navigationBarColor: '#0000ff'
-  });
-};
-
-// Set style for both bars
-const setStyle = async () => {
-  await EdgeToEdge.setStyle({
-    StatusBar: Style.Dark,
-    NavigationBar: Style.Light
-  });
-};
-
-// Set only status bar color
-const setStatusBarColor = async () => {
-  await EdgeToEdge.setStatusBarColor({ color: '#ff0000' });
-};
-
-// Set only navigation bar color
-const setNavigationBarColor = async () => {
-  await EdgeToEdge.setNavigationBarColor({ color: '#0000ff' });
-};
-
-// Set only status bar style
-const setStatusBarStyle = async () => {
-  await EdgeToEdge.setStatusBarStyle({ style: Style.Dark });
-};
-
-// Set only navigation bar style
-const setNavigationBarStyle = async () => {
-  await EdgeToEdge.setNavigationBarStyle({ style: Style.Dark });
+  // { top: 24, bottom: 48, left: 0, right: 0 }
 };
 ```
 
@@ -196,17 +75,13 @@ const setNavigationBarStyle = async () => {
 
 ### Methods
 
-#### enable(...)
+#### enable()
 
-Enable the edge-to-edge mode with optional configuration.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#enableoptions">EnableOptions</a></code> (optional) |
+Enable the edge-to-edge mode.
 
 Returns: `Promise<void>`
 
-Available on Android and iOS.
+Only available on Android.
 
 #### disable()
 
@@ -214,97 +89,13 @@ Disable the edge-to-edge mode.
 
 Returns: `Promise<void>`
 
-Available on Android and iOS.
+Only available on Android.
 
 #### getInsets()
 
-Return the insets that are currently applied to the webview. On iOS, these are the safe area insets. On Android, these are the system bar insets.
+Return the insets that are currently applied to the webview.
 
 Returns: `Promise<GetInsetsResult>`
-
-Available on Android and iOS.
-
-#### setBackgroundColor(...)
-
-Set the background color of the status bar and navigation bar. You can set them to the same color or different colors.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setbackgroundcoloroptions">SetBackgroundColorOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setStatusBarColor(...)
-
-Set the background color of the status bar only.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setstatusbarcoloroptions">SetStatusBarColorOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setNavigationBarColor(...)
-
-Set the background color of the navigation bar only.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setnavigationbarcoloroptions">SetNavigationBarColorOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setBackgroundColorAndStyle(...)
-
-Set the background color and style of the status bar and navigation bar.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setbackgroundcolorandstyleoptions">SetBackgroundColorAndStyleOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setStyle(...)
-
-Set the style of the status bar and navigation bar.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setstyleoptions">SetStyleOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setStatusBarStyle(...)
-
-Set the style of the status bar icons only.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setstylebaroptions">SetStyleBarOptions</a></code> |
-
-Returns: `Promise<void>`
-
-Only available on Android.
-
-#### setNavigationBarStyle(...)
-
-Set the style of the navigation bar buttons only.
-
-| Param         | Type                                              |
-| ------------- | ------------------------------------------------- |
-| **`options`** | <code><a href="#setstylebaroptions">SetStyleBarOptions</a></code> |
-
-Returns: `Promise<void>`
 
 Only available on Android.
 
@@ -314,70 +105,11 @@ Only available on Android.
 
 | Prop         | Type                | Description                                                                |
 | ------------ | ------------------- | -------------------------------------------------------------------------- |
-| **`bottom`** | <code>number</code> | The bottom inset that was applied to the webview. On iOS, this is the safe area bottom inset. |
-| **`left`**   | <code>number</code> | The left inset that was applied to the webview.                             |
-| **`right`**  | <code>number</code> | The right inset that was applied to the webview.                             |
-| **`top`**    | <code>number</code> | The top inset that was applied to the webview. On iOS, this is the safe area top inset (status bar + notch). |
-
-#### SetBackgroundColorOptions
-
-| Prop                      | Type                | Description                                                                                |
-| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`color`**               | <code>string</code> | The hexadecimal color to set as the background color of the status bar and navigation bar. If statusBarColor or navigationBarColor are provided, this will be ignored. |
-| **`statusBarColor`**      | <code>string</code> | The hexadecimal color to set as the background color of the status bar only.              |
-| **`navigationBarColor`**  | <code>string</code> | The hexadecimal color to set as the background color of the navigation bar only.          |
-
-#### SetStatusBarColorOptions
-
-| Prop        | Type                | Description                                                                                |
-| ----------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`color`** | <code>string</code> | The hexadecimal color to set as the background color of the status bar.                   |
-
-#### SetNavigationBarColorOptions
-
-| Prop        | Type                | Description                                                                                |
-| ----------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`color`** | <code>string</code> | The hexadecimal color to set as the background color of the navigation bar.                |
-
-#### EnableOptions
-
-| Prop                      | Type                | Description                                                                                |
-| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`StatusBar`**           | <code>object</code> | Configuration for the status bar.                                                           |
-| **`StatusBar.style`**     | <code>Style</code>  | The style for status bar icons (Dark or Light).                                             |
-| **`StatusBar.color`**     | <code>string</code> | The background color for the status bar.                                                    |
-| **`NavigationBar`**        | <code>object</code> | Configuration for the navigation bar.                                                      |
-| **`NavigationBar.style`** | <code>Style</code>  | The style for navigation bar buttons (Dark or Light).                                      |
-| **`NavigationBar.color`** | <code>string</code> | The background color for the navigation bar.                                               |
-
-#### SetBackgroundColorAndStyleOptions
-
-| Prop        | Type                | Description                                                                                |
-| ----------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`style`** | <code>Style</code> | The style for icons and buttons (Dark or Light).                                           |
-| **`color`** | <code>string</code> | The background color.                                                                      |
-
-#### SetStyleOptions
-
-| Prop              | Type                | Description                                                                                |
-| ----------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`StatusBar`**   | <code>Style</code>   | Style for the status bar. (optional)                                                       |
-| **`NavigationBar`** | <code>Style</code> | Style for the navigation bar. (optional)                                                   |
-
-#### SetStyleBarOptions
-
-| Prop        | Type                | Description                                                                                |
-| ----------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| **`style`** | <code>Style</code> | The style for icons/buttons (Dark or Light).                                               |
-
-#### Style Enum
-
-| Value       | Description                                                                                |
-| ----------- | ------------------------------------------------------------------------------------------ |
-| **`Dark`**  | Dark icons/buttons for light backgrounds.                                                  |
-| **`Light`** | Light icons/buttons for dark backgrounds.                                                   |
+| **`bottom`** | <code>number</code> | The bottom inset that was applied to the webview. Only available on Android. |
+| **`left`**   | <code>number</code> | The left inset that was applied to the webview. Only available on Android.   |
+| **`right`**  | <code>number</code> | The right inset that was applied to the webview. Only available on Android.  |
+| **`top`**    | <code>number</code> | The top inset that was applied to the webview. Only available on Android.    |
 
 ## License
 
 MIT
-

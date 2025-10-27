@@ -1,6 +1,5 @@
 package io.squareetlabs.capacitor.android.edgetoedge;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,27 +9,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.getcapacitor.Logger;
 
 public class EdgeToEdge {
 
     private static final String TAG = "EdgeToEdge";
 
     @NonNull
-    private final EdgeToEdgeConfig config;
-
-    @NonNull
     private final EdgeToEdgePlugin plugin;
 
-    public EdgeToEdge(@NonNull EdgeToEdgePlugin plugin, @NonNull EdgeToEdgeConfig config) {
-        this.config = config;
+    public EdgeToEdge(@NonNull EdgeToEdgePlugin plugin) {
         this.plugin = plugin;
         // Enable edge-to-edge using WindowCompat as per Android documentation
         enableEdgeToEdge();
-        // Set background colors
-        setBackgroundColor(config.getBackgroundColor());
-        setStatusBarColor(config.getStatusBarColor());
-        setNavigationBarColor(config.getNavigationBarColor());
         // Apply insets to enable the edge-to-edge feature
         applyInsets();
     }
@@ -64,55 +54,6 @@ public class EdgeToEdge {
         applyInsets();
     }
 
-    public void enable(com.getcapacitor.JSObject options) {
-        // Re-enable edge-to-edge mode
-        enableEdgeToEdge();
-        
-        if (options != null) {
-            // Handle StatusBar configuration
-            if (options.has("StatusBar")) {
-                try {
-                    com.getcapacitor.JSObject statusBar = options.getJSObject("StatusBar");
-                    if (statusBar != null) {
-                        String style = statusBar.getString("style");
-                        String color = statusBar.getString("color");
-                        if (color != null) {
-                            setStatusBarColor(Color.parseColor(color));
-                        }
-                        if (style != null) {
-                            boolean isDark = "Dark".equalsIgnoreCase(style);
-                            setStatusBarStyle(isDark);
-                        }
-                    }
-                } catch (Exception e) {
-                    Logger.error(TAG, "Error setting StatusBar config", e);
-                }
-            }
-            
-            // Handle NavigationBar configuration
-            if (options.has("NavigationBar")) {
-                try {
-                    com.getcapacitor.JSObject navigationBar = options.getJSObject("NavigationBar");
-                    if (navigationBar != null) {
-                        String style = navigationBar.getString("style");
-                        String color = navigationBar.getString("color");
-                        if (color != null) {
-                            setNavigationBarColor(Color.parseColor(color));
-                        }
-                        if (style != null) {
-                            boolean isDark = "Dark".equalsIgnoreCase(style);
-                            setNavigationBarStyle(isDark);
-                        }
-                    }
-                } catch (Exception e) {
-                    Logger.error(TAG, "Error setting NavigationBar config", e);
-                }
-            }
-        }
-        
-        applyInsets();
-    }
-
     public void disable() {
         // Note: WindowCompat.enableEdgeToEdge cannot be disabled easily,
         // so we just remove the insets to simulate disabling
@@ -124,35 +65,8 @@ public class EdgeToEdge {
         return (ViewGroup.MarginLayoutParams) view.getLayoutParams();
     }
 
-    public void setBackgroundColor(String color) {
-        setBackgroundColor(Color.parseColor(color));
-    }
-
-    public void setBackgroundColor(String color, String statusBarColor, String navigationBarColor) {
-        if (color != null) {
-            setBackgroundColor(Color.parseColor(color));
-        }
-        if (statusBarColor != null) {
-            setStatusBarColor(Color.parseColor(statusBarColor));
-        }
-        if (navigationBarColor != null) {
-            setNavigationBarColor(Color.parseColor(navigationBarColor));
-        }
-    }
-
-    public void setStatusBarColor(String color) {
-        setStatusBarColor(Color.parseColor(color));
-    }
-
-    public void setNavigationBarColor(String color) {
-        setNavigationBarColor(Color.parseColor(color));
-    }
-
     private void applyInsets() {
         View view = plugin.getBridge().getWebView();
-        // Get parent view
-        ViewGroup parent = (ViewGroup) view.getParent();
-        // Set insets
         WindowInsetsCompat currentInsets = ViewCompat.getRootWindowInsets(view);
         if (currentInsets != null) {
             Insets systemBarsInsets = currentInsets.getInsets(
@@ -198,8 +112,6 @@ public class EdgeToEdge {
 
     private void removeInsets() {
         View view = plugin.getBridge().getWebView();
-        // Get parent view
-        ViewGroup parent = (ViewGroup) view.getParent();
         // Reset insets
         ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         mlp.topMargin = 0;
@@ -210,85 +122,4 @@ public class EdgeToEdge {
         // Reset listener
         ViewCompat.setOnApplyWindowInsetsListener(view, null);
     }
-
-    private void setBackgroundColor(int color) {
-        View view = plugin.getBridge().getWebView();
-        // Get parent view
-        ViewGroup parent = (ViewGroup) view.getParent();
-        // Set background color
-        parent.setBackgroundColor(color);
-    }
-
-    private void setStatusBarColor(int color) {
-        Window window = plugin.getActivity().getWindow();
-        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(color);
-        }
-    }
-
-    private void setNavigationBarColor(int color) {
-        Window window = plugin.getActivity().getWindow();
-        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setNavigationBarColor(color);
-        }
-    }
-
-    public void setBackgroundColorAndStyle(boolean isDark, String color) {
-        setBackgroundColor(Color.parseColor(color));
-        setStatusBarColor(Color.parseColor(color));
-        setNavigationBarColor(Color.parseColor(color));
-        setStatusBarStyle(isDark);
-        setNavigationBarStyle(isDark);
-    }
-
-    public void setStatusBarStyle(boolean isDark) {
-        Window window = plugin.getActivity().getWindow();
-        if (window != null) {
-            View decorView = window.getDecorView();
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Use the new API for Android R+
-                androidx.core.view.WindowInsetsControllerCompat insetsController = 
-                    ViewCompat.getWindowInsetsController(decorView);
-                if (insetsController != null) {
-                    insetsController.setAppearanceLightStatusBars(isDark);
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // Use the old API for pre-Android R
-                int flags = decorView.getSystemUiVisibility();
-                if (isDark) {
-                    flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                } else {
-                    flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                }
-                decorView.setSystemUiVisibility(flags);
-            }
-        }
-    }
-
-    public void setNavigationBarStyle(boolean isDark) {
-        Window window = plugin.getActivity().getWindow();
-        if (window != null) {
-            View decorView = window.getDecorView();
-            
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Use the new API for Android R+
-                androidx.core.view.WindowInsetsControllerCompat insetsController = 
-                    ViewCompat.getWindowInsetsController(decorView);
-                if (insetsController != null) {
-                    insetsController.setAppearanceLightNavigationBars(isDark);
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Use the old API for pre-Android R
-                int flags = decorView.getSystemUiVisibility();
-                if (isDark) {
-                    flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-                } else {
-                    flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-                }
-                decorView.setSystemUiVisibility(flags);
-            }
-        }
-    }
 }
-
