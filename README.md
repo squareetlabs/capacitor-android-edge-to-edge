@@ -115,12 +115,17 @@ The plugin **only needs to be installed**. It applies insets to the web view to 
 
 ```typescript
 import { EdgeToEdge, Style } from '@squareetlabs/capacitor-android-edge-to-edge';
+import { Platform } from '@capacitor/core';
 
 // Enable with style and color configuration
 const enable = async () => {
+  // Android: Configure both status bar and navigation bar
+  // iOS: Configure status bar only
   await EdgeToEdge.enable({
     StatusBar: { style: Style.Dark, color: '#ffffff' },
-    NavigationBar: { style: Style.Dark, color: '#ffffff' }
+    ...(Platform.isNativeAndroid() && {
+      NavigationBar: { style: Style.Dark, color: '#ffffff' }
+    })
   });
 };
 
@@ -129,10 +134,12 @@ const disable = async () => {
   await EdgeToEdge.disable();
 };
 
-// Get current insets
+// Get current insets (safe area on iOS, system bars on Android)
 const getInsets = async () => {
   const result = await EdgeToEdge.getInsets();
   console.log('Insets:', result);
+  // { top: 44, bottom: 34, left: 0, right: 0 } on iOS
+  // { top: 24, bottom: 48, left: 0, right: 0 } on Android
 };
 
 // Set both bars to the same color
@@ -199,7 +206,7 @@ Enable the edge-to-edge mode with optional configuration.
 
 Returns: `Promise<void>`
 
-Only available on Android.
+Available on Android and iOS.
 
 #### disable()
 
@@ -207,15 +214,15 @@ Disable the edge-to-edge mode.
 
 Returns: `Promise<void>`
 
-Only available on Android.
+Available on Android and iOS.
 
 #### getInsets()
 
-Return the insets that are currently applied to the webview.
+Return the insets that are currently applied to the webview. On iOS, these are the safe area insets. On Android, these are the system bar insets.
 
 Returns: `Promise<GetInsetsResult>`
 
-Only available on Android.
+Available on Android and iOS.
 
 #### setBackgroundColor(...)
 
@@ -307,10 +314,10 @@ Only available on Android.
 
 | Prop         | Type                | Description                                                                |
 | ------------ | ------------------- | -------------------------------------------------------------------------- |
-| **`bottom`** | <code>number</code> | The bottom inset that was applied to the webview. Only available on Android. |
-| **`left`**   | <code>number</code> | The left inset that was applied to the webview. Only available on Android.   |
-| **`right`**  | <code>number</code> | The right inset that was applied to the webview. Only available on Android.  |
-| **`top`**    | <code>number</code> | The top inset that was applied to the webview. Only available on Android.    |
+| **`bottom`** | <code>number</code> | The bottom inset that was applied to the webview. On iOS, this is the safe area bottom inset. |
+| **`left`**   | <code>number</code> | The left inset that was applied to the webview.                             |
+| **`right`**  | <code>number</code> | The right inset that was applied to the webview.                             |
+| **`top`**    | <code>number</code> | The top inset that was applied to the webview. On iOS, this is the safe area top inset (status bar + notch). |
 
 #### SetBackgroundColorOptions
 
