@@ -1,6 +1,15 @@
 # @squareetlabs/capacitor-android-edge-to-edge
 
-Capacitor 6 and 7 plugin to support [edge-to-edge](https://developer.android.com/develop/ui/views/layout/edge-to-edge) display on Android using `WindowCompat.enableEdgeToEdge()` with advanced features like setting the background color and style (Dark/Light) of the status bar and navigation bar independently.
+Capacitor 6 and 7 plugin to support edge-to-edge display on Android and iOS with advanced features like setting the background color and style (Dark/Light) of the status bar and navigation bar independently.
+
+## Features
+
+- ✅ **Edge-to-edge** display support on Android
+- ✅ **Status bar** color and style control (Android & iOS)
+- ✅ **Navigation bar** color and style control (Android only)
+- ✅ **Safe area insets** handling on iOS
+- ✅ **Independent colors** for status bar and navigation bar
+- ✅ **Style control** (Dark/Light) for system UI elements
 
 ## Installation
 
@@ -33,7 +42,17 @@ This plugin is compatible with:
 - **Capacitor 6.x**
 - **Capacitor 7.x**
 
-Minimum Android SDK: API level 22
+#### Android
+
+- **Minimum SDK:** API level 22
+- Uses `WindowCompat.enableEdgeToEdge()` for Android R+ (API 30+)
+- Falls back to system UI flags for older Android versions
+
+#### iOS
+
+- **Minimum SDK:** iOS 12.0+
+- Full support for iOS 13+ with modern status bar API
+- Automatic safe area insets handling
 
 ## Configuration
 
@@ -85,7 +104,14 @@ export default config;
 
 ## Usage
 
-The plugin **only needs to be installed**. It applies insets to the web view to support edge-to-edge display on Android. The plugin also provides methods to set the background color of the status bar and navigation bar independently. It's recommended to use these methods in combination with the [Status Bar](https://capacitorjs.com/docs/apis/status-bar) plugin.
+The plugin **only needs to be installed**. It applies insets to the web view to support edge-to-edge display. The plugin provides methods to set the background color and style of the status bar and navigation bar (Android only) independently.
+
+### Platform Differences
+
+**Android:** Full control over status bar and navigation bar colors and styles
+**iOS:** Status bar control with automatic safe area handling (navigation bar concepts don't apply on iOS)
+
+### Basic Example
 
 ```typescript
 import { EdgeToEdge, Style } from '@squareetlabs/capacitor-android-edge-to-edge';

@@ -42,62 +42,42 @@ declare module '@capacitor/cli' {
 export interface EdgeToEdgePlugin {
   /**
    * Enable the edge-to-edge mode with optional configuration.
-   *
-   * Only available on Android.
    */
   enable(options?: EnableOptions): Promise<void>;
   /**
    * Disable the edge-to-edge mode.
-   *
-   * Only available on Android.
    */
   disable(): Promise<void>;
   /**
    * Return the insets that are currently applied to the webview.
-   *
-   * Only available on Android.
    */
   getInsets(): Promise<GetInsetsResult>;
   /**
    * Set the background color of the status bar and navigation bar.
-   *
-   * Only available on Android.
    */
   setBackgroundColor(options: SetBackgroundColorOptions): Promise<void>;
   /**
    * Set the background color and style of the status bar and navigation bar.
-   *
-   * Only available on Android.
    */
   setBackgroundColorAndStyle(options: SetBackgroundColorAndStyleOptions): Promise<void>;
   /**
    * Set the style of the status bar and navigation bar.
-   *
-   * Only available on Android.
    */
   setStyle(options: SetStyleOptions): Promise<void>;
   /**
    * Set the background color of the status bar only.
-   *
-   * Only available on Android.
    */
   setStatusBarColor(options: SetStatusBarColorOptions): Promise<void>;
   /**
    * Set the background color of the navigation bar only.
-   *
-   * Only available on Android.
    */
   setNavigationBarColor(options: SetNavigationBarColorOptions): Promise<void>;
   /**
    * Set the style of the status bar icons only.
-   *
-   * Only available on Android.
    */
   setStatusBarStyle(options: SetStyleBarOptions): Promise<void>;
   /**
    * Set the style of the navigation bar buttons only.
-   *
-   * Only available on Android.
    */
   setNavigationBarStyle(options: SetStyleBarOptions): Promise<void>;
 }
@@ -108,26 +88,18 @@ export interface EdgeToEdgePlugin {
 export interface GetInsetsResult {
   /**
    * The bottom inset that was applied to the webview.
-   *
-   * Only available on Android.
    */
   bottom: number;
   /**
    * The left inset that was applied to the webview.
-   *
-   * Only available on Android.
    */
   left: number;
   /**
    * The right inset that was applied to the webview.
-   *
-   * Only available on Android.
    */
   right: number;
   /**
    * The top inset that was applied to the webview.
-   *
-   * Only available on Android.
    */
   top: number;
 }

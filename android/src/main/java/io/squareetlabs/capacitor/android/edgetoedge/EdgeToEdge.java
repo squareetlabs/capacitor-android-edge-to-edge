@@ -243,29 +243,51 @@ public class EdgeToEdge {
 
     public void setStatusBarStyle(boolean isDark) {
         Window window = plugin.getActivity().getWindow();
-        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (window != null) {
             View decorView = window.getDecorView();
-            int flags = decorView.getSystemUiVisibility();
-            if (isDark) {
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            } else {
-                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Use the new API for Android R+
+                androidx.core.view.WindowInsetsControllerCompat insetsController = 
+                    ViewCompat.getWindowInsetsController(decorView);
+                if (insetsController != null) {
+                    insetsController.setAppearanceLightStatusBars(isDark);
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Use the old API for pre-Android R
+                int flags = decorView.getSystemUiVisibility();
+                if (isDark) {
+                    flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                } else {
+                    flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                }
+                decorView.setSystemUiVisibility(flags);
             }
-            decorView.setSystemUiVisibility(flags);
         }
     }
 
     public void setNavigationBarStyle(boolean isDark) {
         Window window = plugin.getActivity().getWindow();
-        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (window != null) {
             View decorView = window.getDecorView();
-            int flags = decorView.getSystemUiVisibility();
-            if (isDark) {
-                flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            } else {
-                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Use the new API for Android R+
+                androidx.core.view.WindowInsetsControllerCompat insetsController = 
+                    ViewCompat.getWindowInsetsController(decorView);
+                if (insetsController != null) {
+                    insetsController.setAppearanceLightNavigationBars(isDark);
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Use the old API for pre-Android R
+                int flags = decorView.getSystemUiVisibility();
+                if (isDark) {
+                    flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                } else {
+                    flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                }
+                decorView.setSystemUiVisibility(flags);
             }
-            decorView.setSystemUiVisibility(flags);
         }
     }
 }
