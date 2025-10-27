@@ -62,6 +62,55 @@ public class EdgeToEdge {
         applyInsets();
     }
 
+    public void enable(com.getcapacitor.JSObject options) {
+        // Re-enable edge-to-edge mode
+        enableEdgeToEdge();
+        
+        if (options != null) {
+            // Handle StatusBar configuration
+            if (options.has("StatusBar")) {
+                try {
+                    com.getcapacitor.JSObject statusBar = options.getJSObject("StatusBar");
+                    if (statusBar != null) {
+                        String style = statusBar.getString("style");
+                        String color = statusBar.getString("color");
+                        if (color != null) {
+                            setStatusBarColor(Color.parseColor(color));
+                        }
+                        if (style != null) {
+                            boolean isDark = "Dark".equalsIgnoreCase(style);
+                            setStatusBarStyle(isDark);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.error(TAG, "Error setting StatusBar config", e);
+                }
+            }
+            
+            // Handle NavigationBar configuration
+            if (options.has("NavigationBar")) {
+                try {
+                    com.getcapacitor.JSObject navigationBar = options.getJSObject("NavigationBar");
+                    if (navigationBar != null) {
+                        String style = navigationBar.getString("style");
+                        String color = navigationBar.getString("color");
+                        if (color != null) {
+                            setNavigationBarColor(Color.parseColor(color));
+                        }
+                        if (style != null) {
+                            boolean isDark = "Dark".equalsIgnoreCase(style);
+                            setNavigationBarStyle(isDark);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.error(TAG, "Error setting NavigationBar config", e);
+                }
+            }
+        }
+        
+        applyInsets();
+    }
+
     public void disable() {
         // Note: WindowCompat.enableEdgeToEdge cannot be disabled easily,
         // so we just remove the insets to simulate disabling
@@ -179,6 +228,42 @@ public class EdgeToEdge {
         Window window = plugin.getActivity().getWindow();
         if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(color);
+        }
+    }
+
+    public void setBackgroundColorAndStyle(boolean isDark, String color) {
+        setBackgroundColor(Color.parseColor(color));
+        setStatusBarColor(Color.parseColor(color));
+        setNavigationBarColor(Color.parseColor(color));
+        setStatusBarStyle(isDark);
+        setNavigationBarStyle(isDark);
+    }
+
+    public void setStatusBarStyle(boolean isDark) {
+        Window window = plugin.getActivity().getWindow();
+        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = window.getDecorView();
+            int flags = decorView.getSystemUiVisibility();
+            if (isDark) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            decorView.setSystemUiVisibility(flags);
+        }
+    }
+
+    public void setNavigationBarStyle(boolean isDark) {
+        Window window = plugin.getActivity().getWindow();
+        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            View decorView = window.getDecorView();
+            int flags = decorView.getSystemUiVisibility();
+            if (isDark) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            } else {
+                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            }
+            decorView.setSystemUiVisibility(flags);
         }
     }
 }

@@ -25,10 +25,16 @@ public class EdgeToEdgePlugin extends Plugin {
 
     @PluginMethod
     public void enable(PluginCall call) {
+        JSObject options = call.getObject("options");
+        
         getActivity()
             .runOnUiThread(() -> {
                 try {
-                    implementation.enable();
+                    if (options != null) {
+                        implementation.enable(options);
+                    } else {
+                        implementation.enable();
+                    }
                     call.resolve();
                 } catch (Exception exception) {
                     call.reject(exception.getMessage());
@@ -116,6 +122,91 @@ public class EdgeToEdgePlugin extends Plugin {
             .runOnUiThread(() -> {
                 try {
                     implementation.setNavigationBarColor(color);
+                    call.resolve();
+                } catch (Exception exception) {
+                    call.reject(exception.getMessage());
+                }
+            });
+    }
+
+    @PluginMethod
+    public void setBackgroundColorAndStyle(PluginCall call) {
+        String styleStr = call.getString("style");
+        String color = call.getString("color");
+        
+        if (styleStr == null || color == null) {
+            call.reject("style and color must be provided.");
+            return;
+        }
+        
+        getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    boolean isDark = "Dark".equalsIgnoreCase(styleStr);
+                    implementation.setBackgroundColorAndStyle(isDark, color);
+                    call.resolve();
+                } catch (Exception exception) {
+                    call.reject(exception.getMessage());
+                }
+            });
+    }
+
+    @PluginMethod
+    public void setStyle(PluginCall call) {
+        String statusBarStyleStr = call.getString("StatusBar");
+        String navigationBarStyleStr = call.getString("NavigationBar");
+        
+        getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    if (statusBarStyleStr != null) {
+                        boolean isDark = "Dark".equalsIgnoreCase(statusBarStyleStr);
+                        implementation.setStatusBarStyle(isDark);
+                    }
+                    if (navigationBarStyleStr != null) {
+                        boolean isDark = "Dark".equalsIgnoreCase(navigationBarStyleStr);
+                        implementation.setNavigationBarStyle(isDark);
+                    }
+                    call.resolve();
+                } catch (Exception exception) {
+                    call.reject(exception.getMessage());
+                }
+            });
+    }
+
+    @PluginMethod
+    public void setStatusBarStyle(PluginCall call) {
+        String styleStr = call.getString("style");
+        if (styleStr == null) {
+            call.reject("style must be provided.");
+            return;
+        }
+        
+        getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    boolean isDark = "Dark".equalsIgnoreCase(styleStr);
+                    implementation.setStatusBarStyle(isDark);
+                    call.resolve();
+                } catch (Exception exception) {
+                    call.reject(exception.getMessage());
+                }
+            });
+    }
+
+    @PluginMethod
+    public void setNavigationBarStyle(PluginCall call) {
+        String styleStr = call.getString("style");
+        if (styleStr == null) {
+            call.reject("style must be provided.");
+            return;
+        }
+        
+        getActivity()
+            .runOnUiThread(() -> {
+                try {
+                    boolean isDark = "Dark".equalsIgnoreCase(styleStr);
+                    implementation.setNavigationBarStyle(isDark);
                     call.resolve();
                 } catch (Exception exception) {
                     call.reject(exception.getMessage());

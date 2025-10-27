@@ -7,6 +7,10 @@ public class EdgeToEdgeConfig {
     private int backgroundColor = Color.WHITE;
     private int statusBarColor = Color.WHITE;
     private int navigationBarColor = Color.WHITE;
+    
+    // Style constants: 0 = Light (for dark backgrounds), 1 = Dark (for light backgrounds)
+    private boolean statusBarStyleIsDark = false;
+    private boolean navigationBarStyleIsDark = false;
 
     public int getBackgroundColor() {
         return this.backgroundColor;
@@ -30,6 +34,22 @@ public class EdgeToEdgeConfig {
 
     public void setNavigationBarColor(int navigationBarColor) {
         this.navigationBarColor = navigationBarColor;
+    }
+
+    public boolean getStatusBarStyleIsDark() {
+        return this.statusBarStyleIsDark;
+    }
+
+    public void setStatusBarStyleIsDark(boolean isDark) {
+        this.statusBarStyleIsDark = isDark;
+    }
+
+    public boolean getNavigationBarStyleIsDark() {
+        return this.navigationBarStyleIsDark;
+    }
+
+    public void setNavigationBarStyleIsDark(boolean isDark) {
+        this.navigationBarStyleIsDark = isDark;
     }
 }
 
