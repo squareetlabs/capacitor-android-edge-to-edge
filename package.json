@@ -1,6 +1,6 @@
 {
   "name": "@squareetlabs/capacitor-android-edge-to-edge",
-  "version": "3.0.7",
+  "version": "3.1.0",
   "description": "Capacitor 6 and 7 plugin to support edge-to-edge display on Android using WindowCompat.enableEdgeToEdge()",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",

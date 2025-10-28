@@ -21,7 +21,7 @@ public class EdgeToEdgePlugin extends Plugin {
     @Override
     public void load() {
         // Read configuration from capacitor.config.ts
-        pluginConfig = getPluginConfig();
+        pluginConfig = getConfig();
         
         // Get configuration values
         Boolean disableEdgeToEdgeForGesture = pluginConfig.getBoolean("disableEdgeToEdgeForGesture", false);
