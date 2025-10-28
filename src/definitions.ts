@@ -2,7 +2,9 @@
 
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
-    EdgeToEdge?: {};
+    EdgeToEdge?: {
+      disableEdgeToEdgeForGesture?: boolean;
+    };
   }
 }
 
@@ -84,6 +86,14 @@ export interface EdgeToEdgePlugin {
    * This method specifically handles cases where Android ignores color settings.
    */
   forceTransparentNavigationBar(): Promise<void>;
+  /**
+   * Check if the device is using gesture navigation.
+   */
+  checkGestureNavigation(): Promise<CheckGestureNavigationResult>;
+  /**
+   * Set plugin configuration options.
+   */
+  setConfiguration(options: SetConfigurationOptions): Promise<void>;
 }
 
 /**
@@ -245,6 +255,26 @@ export interface ConfigureForGestureNavigationOptions {
    * Default: false
    */
   immersive?: boolean;
+}
+
+/**
+ * Result for checking if device uses gesture navigation.
+ */
+export interface CheckGestureNavigationResult {
+  /**
+   * Whether the device is using gesture navigation
+   */
+  isGestureNavigation: boolean;
+}
+
+/**
+ * Options for setting plugin configuration.
+ */
+export interface SetConfigurationOptions {
+  /**
+   * Disable edge-to-edge when gesture navigation is enabled
+   */
+  disableEdgeToEdgeForGesture?: boolean;
 }
 
 

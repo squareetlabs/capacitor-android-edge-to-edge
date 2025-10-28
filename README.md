@@ -25,6 +25,23 @@ npx cap sync
 
 This plugin enables edge-to-edge display on Android using `WindowCompat.enableEdgeToEdge()` as recommended by the [Android documentation](https://developer.android.com/develop/ui/views/layout/edge-to-edge).
 
+**Configuration in capacitor.config.ts:**
+
+```typescript
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  plugins: {
+    EdgeToEdge: {
+      // Disable edge-to-edge when gesture navigation is detected
+      disableEdgeToEdgeForGesture: true
+    }
+  }
+};
+
+export default config;
+```
+
 **Important:** If you are using the [Capacitor Keyboard](https://capacitorjs.com/docs/apis/keyboard) plugin, make sure to set the `resizeOnFullScreen` property to `false` (default) in your Capacitor Configuration file:
 
 ```json
@@ -112,6 +129,15 @@ await EdgeToEdge.configureForGestureNavigation({
   lightNavigationBar: true,
   statusBarColor: '#F54927',
   immersive: false
+});
+
+// Check if device is using gesture navigation
+const result = await EdgeToEdge.checkGestureNavigation();
+console.log('Is gesture navigation:', result.isGestureNavigation);
+
+// Disable edge-to-edge for gesture navigation
+await EdgeToEdge.setConfiguration({
+  disableEdgeToEdgeForGesture: true
 });
 ```
 
@@ -263,6 +289,26 @@ Returns: `Promise<void>`
 
 Only available on Android.
 
+#### checkGestureNavigation()
+
+Check if the device is using gesture navigation.
+
+Returns: `Promise<CheckGestureNavigationResult>`
+
+Only available on Android.
+
+#### setConfiguration(options)
+
+Set plugin configuration options.
+
+| Param         | Type                                                       |
+| ------------- | ---------------------------------------------------------- |
+| **`options`** | <code><a href="#setconfigurationoptions">SetConfigurationOptions</a></code> |
+
+Returns: `Promise<void>`
+
+Only available on Android.
+
 ### Interfaces
 
 #### GetInsetsResult
@@ -332,6 +378,18 @@ Only available on Android.
 | **`navigationBarColor`** | <code>string</code>   | Navigation bar color in ARGB format (e.g., "#FF000000" for opaque black)                     |
 | **`enforceContrast`**   | <code>boolean</code>   | true to enforce navigation bar contrast (translucent), false for transparent. Default: true  |
 | **`immersive`**         | <code>boolean</code>   | true to enter immersive mode (hide system bars). Default: false                                |
+
+#### CheckGestureNavigationResult
+
+| Prop          | Type                  | Description                             |
+| ------------- | --------------------- | --------------------------------------- |
+| **`isGestureNavigation`** | <code>boolean</code>  | Whether the device is using gesture navigation |
+
+#### SetConfigurationOptions
+
+| Prop        | Type                  | Description                            |
+| ----------- | ---------------------- | -------------------------------------- |
+| **`disableEdgeToEdgeForGesture`** | <code>boolean</code>  | Disable edge-to-edge when gesture navigation is enabled |
 
 ## License
 

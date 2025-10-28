@@ -22,9 +22,19 @@ public class EdgeToEdge {
     private final EdgeToEdgePlugin plugin;
     
     private boolean immersiveMode = false;
+    
+    private EdgeToEdgeConfig config;
 
     public EdgeToEdge(@NonNull EdgeToEdgePlugin plugin) {
         this.plugin = plugin;
+        this.config = new EdgeToEdgeConfig();
+        
+        // Check if we should disable edge-to-edge for gesture navigation
+        if (config.isDisableEdgeToEdgeForGesture() && isGestureNavigation()) {
+            // Don't enable edge-to-edge for gesture navigation
+            return;
+        }
+        
         // Enable edge-to-edge using WindowCompat as per Android documentation
         enableEdgeToEdge();
         // Apply insets to enable the edge-to-edge feature
@@ -350,6 +360,27 @@ public class EdgeToEdge {
             }
         }
         return false;
+    }
+
+    /**
+     * Check if device is using gesture navigation (public method)
+     */
+    public boolean checkGestureNavigation() {
+        return isGestureNavigation();
+    }
+
+    /**
+     * Set configuration
+     */
+    public void setConfig(EdgeToEdgeConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * Get configuration
+     */
+    public EdgeToEdgeConfig getConfig() {
+        return config;
     }
 
     /**

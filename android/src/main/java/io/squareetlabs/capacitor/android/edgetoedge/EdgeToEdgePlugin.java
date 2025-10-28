@@ -5,6 +5,7 @@ import com.getcapacitor.JSObject;
 import com.getcapacitor.Logger;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginConfig;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
@@ -14,10 +15,26 @@ public class EdgeToEdgePlugin extends Plugin {
     private static final String TAG = "EdgeToEdge";
 
     private EdgeToEdge implementation;
+    
+    private PluginConfig pluginConfig;
 
     @Override
     public void load() {
+        // Read configuration from capacitor.config.ts
+        pluginConfig = getPluginConfig();
+        
+        // Get configuration values
+        Boolean disableEdgeToEdgeForGesture = pluginConfig.getBoolean("disableEdgeToEdgeForGesture", false);
+        
+        // Initialize implementation with configuration
         implementation = new EdgeToEdge(this);
+        
+        // Apply configuration if available
+        if (disableEdgeToEdgeForGesture) {
+            EdgeToEdgeConfig config = implementation.getConfig();
+            config.setDisableEdgeToEdgeForGesture(true);
+            implementation.setConfig(config);
+        }
     }
 
     @PluginMethod
@@ -332,5 +349,30 @@ public class EdgeToEdgePlugin extends Plugin {
                 call.reject(exception.getMessage());
             }
         });
+    }
+
+    @PluginMethod
+    public void checkGestureNavigation(PluginCall call) {
+        try {
+            boolean isGestureNavigation = implementation.checkGestureNavigation();
+            JSObject result = new JSObject();
+            result.put("isGestureNavigation", isGestureNavigation);
+            call.resolve(result);
+        } catch (Exception exception) {
+            call.reject(exception.getMessage());
+        }
+    }
+
+    @PluginMethod
+    public void setConfiguration(PluginCall call) {
+        Boolean disableEdgeToEdgeForGesture = call.getBoolean("disableEdgeToEdgeForGesture");
+        
+        if (disableEdgeToEdgeForGesture != null) {
+            EdgeToEdgeConfig config = implementation.getConfig();
+            config.setDisableEdgeToEdgeForGesture(disableEdgeToEdgeForGesture);
+            implementation.setConfig(config);
+        }
+        
+        call.resolve();
     }
 }
